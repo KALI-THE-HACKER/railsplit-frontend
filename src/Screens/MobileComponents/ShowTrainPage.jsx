@@ -89,7 +89,7 @@ function ShowTrainPage() {
         const startStream = async () => {
             try {
                 // Post req to get a user_id
-                const res = await fetch('https://railsplit-server.luckylinux.xyz/start-stream', {
+                const res = await fetch('http://railsplit-server.luckylinux.xyz/start-stream', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ function ShowTrainPage() {
                 const { user_id } = await res.json();
 
                 // Open EventSource for actually fetching trains data using SSE
-                eventSource = new EventSource(`https://railsplit-server.luckylinux.xyz/railsplit-server?user_id=${user_id}`);
+                eventSource = new EventSource(`http://railsplit-server.luckylinux.xyz/railsplit-server?user_id=${user_id}`);
 
                 function processApiResponse(data) {
                     if (Array.isArray(data)) {
