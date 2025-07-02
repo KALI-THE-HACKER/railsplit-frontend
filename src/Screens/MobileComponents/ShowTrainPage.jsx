@@ -88,7 +88,6 @@ function ShowTrainPage() {
 
         const startStream = async () => {
             try {
-                alert("Sending start-stream req");
                 // Post req to get a user_id
                 const res = await fetch('https://railsplit-server.luckylinux.xyz/start-stream', {
                     method: 'POST',
@@ -102,13 +101,11 @@ function ShowTrainPage() {
                         date
                     })
                 });
-                alert("start-stream req done!");
 
                 if (!res.ok) throw new Error("Failed to start stream");
 
                 // Get a user_id from the backend
                 const { user_id } = await res.json();
-                alert(`usedID ${user_id}`);
 
                 // Open EventSource for actually fetching trains data using SSE
                 eventSource = new EventSource(`https://railsplit-server.luckylinux.xyz/railsplit-server?user_id=${user_id}`);
