@@ -27,7 +27,6 @@ function TatkalPage(){
     
 
     const iAgree = async () => {
-        
         try{
             const userDoc = await getDoc(doc(db, "users", auth.currentUser?.uid));
             if(userDoc.exists()){
@@ -82,29 +81,41 @@ function TatkalPage(){
         return { allowed: true, userIP };
     };
 
-
     const setupRecaptcha = () => {
         try {
+            // Clear existing recaptcha if it exists
             if (window.recaptchaVerifier) {
                 window.recaptchaVerifier.clear();
                 window.recaptchaVerifier = null;
             }
             
-            
+            // Create new recaptcha verifier
             window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
                 size: "invisible",
+                callback: (response) => {
+                    console.log("Recaptcha verified");
+                },
+                'expired-callback': () => {
+                    console.log("Recaptcha expired");
+                }
             });
             
         } catch (error) {
+            console.error("Error creating recaptcha:", error);
             alert("Error creating recaptcha: " + error.message);
-            console.error("Full error:", error);
         }
     };
 
-
     const sendOtp = async () => {
-        if(phone.length!=10){
-            alert("Please provide a legit phone number!");
+        // Basic validation
+        if (!phone || phone.length !== 10) {
+            alert("Please provide a valid 10-digit phone number!");
+            return;
+        }
+
+        // Check if phone number contains only digits
+        if (!/^\d{10}$/.test(phone)) {
+            alert("Phone number should contain only digits!");
             return;
         }
 
@@ -114,32 +125,52 @@ function TatkalPage(){
             alert(ipCheck.message);
             return;
         }
-        try{
-            setupRecaptcha();
+
+        try {
             setSendingOtp(true);
-            setShowOtpBox(true);
-            const confirmationResult = await signInWithPhoneNumber(auth, "+91" + phone, window.recaptchaVerifier);
-            setConfirmation(confirmationResult);
-            setSendingOtp(false);
-
+            setError('');
             
-        }catch(err){
-            setError(err);
+            // Setup recaptcha
+            setupRecaptcha();
+            
+            // Format phone number properly
+            const formattedPhone = "+91" + phone;
+            console.log("Sending OTP to:", formattedPhone);
+            
+            // Send OTP
+            const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
+            
+            console.log("OTP sent successfully");
+            setConfirmation(confirmationResult);
+            setShowOtpBox(true);
+            
+            // Update IP counter after successful send
+            if (ipCheck.userIP) {
+                await setDoc(doc(db, "ipLimits", ipCheck.userIP), {
+                    requests: increment(1),
+                    phone: formattedPhone,
+                    date: new Date().toDateString(),
+                    lastRequest: serverTimestamp()
+                }, { merge: true });
+            }
+            
+        } catch (err) {
+            console.error("Error sending OTP:", err);
+            setError(err.message);
+            
+            // Handle specific error cases
+            if (err.code === 'auth/too-many-requests') {
+                alert("Too many requests. Please try again later.");
+            } else if (err.code === 'auth/invalid-phone-number') {
+                alert("Invalid phone number format. Please check and try again.");
+            } else if (err.code === 'auth/quota-exceeded') {
+                alert("SMS quota exceeded. Please try again later or contact support.");
+            } else {
+                alert("Error sending OTP: " + err.message);
+            }
+        } finally {
             setSendingOtp(false);
         }
-        
-        setSendingOtp(false);
-
-        // Update IP counter after successful send
-        if (ipCheck.userIP) {
-            await setDoc(doc(db, "ipLimits", ipCheck.userIP), {
-                requests: increment(1),
-                phone: "+91"+phone,
-                date: new Date().toDateString(),
-                lastRequest: serverTimestamp()
-            }, { merge: true });
-        }
-
     };
 
     async function saveNumberToDb(phoneNumber) {
@@ -156,15 +187,25 @@ function TatkalPage(){
     }
 
     const verifyOtp = async () => {
-        if(otp.length!=6){
-            alert("Please enter a valid OTP!");
+        if (!otp || otp.length !== 6) {
+            alert("Please enter a valid 6-digit OTP!");
             return;
         }
+
+        if (!/^\d{6}$/.test(otp)) {
+            alert("OTP should contain only digits!");
+            return;
+        }
+
         try {
             setVerifyingOtp(true);
+            setError('');
 
-            // Confirm the OTP and get the phone credential
+            // Confirm the OTP
             const result = await confirmation.confirm(otp);
+            console.log("OTP verified successfully");
+
+            // Get phone credential
             const phoneCredential = PhoneAuthProvider.credential(confirmation.verificationId, otp);
 
             // Ensure the user is signed in with email before linking
@@ -186,6 +227,8 @@ function TatkalPage(){
             alert("Phone verified and linked!");
             navigate('/tatkalbooking');
         } catch (err) {
+            console.error("Error verifying OTP:", err);
+            
             if (err.code === 'auth/credential-already-in-use' || err.code === 'auth/account-exists-with-different-credential') {
                 alert("This phone number is already linked to another account. Please login with the correct account.");
             } else if (err.code === 'auth/invalid-verification-code') {
@@ -195,13 +238,12 @@ function TatkalPage(){
                 alert("You can proceed, you're linked already!");
                 navigate('/tatkalbooking');
             } else {
-                alert(err.message);
+                alert("Error verifying OTP: " + err.message);
             }
         } finally {
             setVerifyingOtp(false);
         }
     };
-  
 
     return(
         <>
@@ -213,62 +255,67 @@ function TatkalPage(){
 
             { showNotice ?
                 <div className="relative w-90 h-fit py-5 rounded-2xl text-justify bg-[#1D1F24] text-white text-2xl px-5 top-20">
-                    <p>We don’t book Tatkal tickets directly. Instead, we coordinate with our trusted agents to handle the booking. To proceed, we need to verify your phone number. Once you submit your request, we’ll reach out to the agent. If booking is available, we’ll contact you for payment. After receiving the payment, we’ll send you the ticket.</p>
+                    <p>We don't book Tatkal tickets directly. Instead, we coordinate with our trusted agents to handle the booking. To proceed, we need to verify your phone number. Once you submit your request, we'll reach out to the agent. If booking is available, we'll contact you for payment. After receiving the payment, we'll send you the ticket.</p>
 
                     <button onClick={iAgree} className="border-0 bg-blue-500 text-white text-xl font-semibold mt-10 mb-5 h-13 rounded-xl w-full">I agree</button>
                 </div>
             
-            
             : <div className="absolute top-[27vh] left-[5vw] backdrop-blur-xs bg-[#1D1F24] p-6 rounded-2xl w-[90vw] text-center text-white z-20">
-            <h1 className="text-4xl font-semibold text-white mb-10">Phone Verification</h1>
-            <div className="flex flex-col gap-4 items-center">
-                <div className="flex items-center border border-gray-400 rounded-lg overflow-hidden w-[75vw] h-14">
-                    <span className="text-white text-xl px-3">+91</span>
-                    <input
-                        onChange={(e) => setPhone(e.target.value)}
-                        type="text"
-                        inputMode="numeric"
-                        pattern="\d*"
-                        maxLength={10}
-                        className="text-xl flex-1 px-3 py-2 outline-none bg-transparent text-white"
-                        placeholder="9876XXXXX"
-                    />
+                <h1 className="text-4xl font-semibold text-white mb-10">Phone Verification</h1>
+                <div className="flex flex-col gap-4 items-center">
+                    <div className="flex items-center border border-gray-400 rounded-lg overflow-hidden w-[75vw] h-14">
+                        <span className="text-white text-xl px-3">+91</span>
+                        <input
+                            onChange={(e) => setPhone(e.target.value)}
+                            type="text"
+                            inputMode="numeric"
+                            pattern="\d*"
+                            maxLength={10}
+                            className="text-xl flex-1 px-3 py-2 outline-none bg-transparent text-white"
+                            placeholder="9876XXXXX"
+                            value={phone}
+                        />
                     </div>
 
-                <div id="recaptcha-container"></div>
-                { showOtpBox && 
-                <div className="relative flex flex-col gap-2">
-                    <input
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="Enter OTP"
-                        maxLength={6}
-                        type="text"
-                        inputMode="numeric"
-                        pattern="\d*"
-                        className="border border-gray-400 px-4 h-12 w-[75vw] rounded-lg bg-transparent text-white text-xl focus:outline-none"
-                    />
-                    <span className="italic text-green-600"> OTP sent!</span>
+                    <div id="recaptcha-container"></div>
                     
-                </div>
-                }
-
-                <button onClick={() => {
-                    if(!showOtpBox){
-                        sendOtp();
-                    } else{
-                        verifyOtp();
+                    { showOtpBox && 
+                    <div className="relative flex flex-col gap-2">
+                        <input
+                            onChange={(e) => setOtp(e.target.value)}
+                            placeholder="Enter OTP"
+                            maxLength={6}
+                            type="text"
+                            inputMode="numeric"
+                            pattern="\d*"
+                            className="border border-gray-400 px-4 h-12 w-[75vw] rounded-lg bg-transparent text-white text-xl focus:outline-none"
+                            value={otp}
+                        />
+                        <span className="italic text-green-600"> OTP sent!</span>
+                    </div>
                     }
-                    }} className="border-0 bg-blue-500 text-white text-xl font-semibold mt-4 mb-2 h-13 w-[75vw] rounded-xl">{!showOtpBox 
-                        ? (sendingOtp ? "Sending OTP..." : "Get OTP") 
-                        : (verifyingOtp ? "verifying OTP..." : "Verify OTP")}
-                </button>
-            </div>
-            
-            <div>
-            </div>
+
+                    {error && <div className="text-red-500 text-sm">{error}</div>}
+
+                    <button 
+                        onClick={() => {
+                            if(!showOtpBox){
+                                sendOtp();
+                            } else{
+                                verifyOtp();
+                            }
+                        }} 
+                        disabled={sendingOtp || verifyingOtp}
+                        className="border-0 bg-blue-500 text-white text-xl font-semibold mt-4 mb-2 h-13 w-[75vw] rounded-xl disabled:opacity-50"
+                    >
+                        {!showOtpBox 
+                            ? (sendingOtp ? "Sending OTP..." : "Get OTP") 
+                            : (verifyingOtp ? "Verifying OTP..." : "Verify OTP")
+                        }
+                    </button>
+                </div>
             </div>
             }
-            
         </div>
         </>
     );
