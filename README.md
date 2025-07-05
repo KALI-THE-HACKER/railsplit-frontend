@@ -55,20 +55,24 @@ will be available soon...
 ```bash
 git clone https://github.com/KALI-THE-HACKER/railsplit-frontend.git
 cd railsplit-frontend
+```
 
 ### Install Dependencies
 ```bash
 npm install
+```
 
 ### Run locally
 ```bash
 npm run dev
+```
 
 ---
 
 ## 🔑 Environment Variables
 ```env
 VITE_RAILSPLIT_API_KEY= here's your API key for railplit's backend
+```
 
 ---
 
