@@ -89,7 +89,7 @@ function ShowTrainPage() {
         const startStream = async () => {
             try {
                 // Post req to get a user_id
-                const res = await fetch('https://railsplit-server.luckylinux.xyz/start-stream', {
+                const res = await fetch('http://192.168.29.62:8000/start-stream', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ function ShowTrainPage() {
                 const { user_id } = await res.json();
 
                 // Open EventSource for actually fetching trains data using SSE
-                eventSource = new EventSource(`https://railsplit-server.luckylinux.xyz/railsplit-server?user_id=${user_id}`);
+                eventSource = new EventSource(`http://192.168.29.62:8000/railsplit-server?user_id=${user_id}`);
 
                 function processApiResponse(data) {
                     if (Array.isArray(data)) {
@@ -479,7 +479,7 @@ function ShowTrainPage() {
 
                         {/* <!-- SVG Curved Line --> */}
                         <svg class="route-svg">
-                            <path d="M 33 98 C 240 138 145 32 280 40"stroke="#aaa" stroke-width="2" fill="none" stroke-dasharray="6,6"/>
+                            <path d="M 40 98 C 240 138 145 32 260 40"stroke="#aaa" stroke-width="2" fill="none" stroke-dasharray="6,6"/>
                         </svg>
                         </div>
 

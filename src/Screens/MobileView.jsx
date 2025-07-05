@@ -29,7 +29,7 @@ function MobileView(){
 
     useEffect(() => {
         setPersistence(auth, browserLocalPersistence).catch((err) =>
-            alert(`Auth persistence error:${err}`)
+            console.error("Auth persistence error:", err)
         );
 
         // Listen to Firebase Auth state changes
