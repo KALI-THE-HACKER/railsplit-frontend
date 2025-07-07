@@ -33,7 +33,8 @@ function SearchTrainPage(){
     const [departureDate, setDepartureDate] = useState(null);
     const [formattedDate, setFormattedDate] = useState('');
     const [dateTimeBox, setDateTimeBox] = useState(false);
-    const trainClasses = ['No preference', 'Sleeper', '3A', '2A', '1A']
+    const trainClasses = ['No preference', 'Sleeper', '3A', '2A', '1A'];
+    const [showNotification, setShowNotification] = useState(true);
 
     const handleFocus = (key) => {
         setActiveInput(key);
@@ -59,6 +60,15 @@ function SearchTrainPage(){
         
         filterSuggestions(inputText);
     };
+
+    useEffect(() => {
+            setTimeout(() => {
+                setShowNotification(false);
+            }, 7000); // Hide notification after 7 seconds
+            return () => {
+                setShowNotification(false);
+            }
+    }, [])
 
     useEffect(() => {
         if (refs.fromStation.current && !cleared.fromStation) {
@@ -121,7 +131,19 @@ function SearchTrainPage(){
         setActiveInput(null);
     };
 
-    function searchTrainsButton(){
+    function searchTrainsButton(sampleData=false) {
+
+        if(sampleData){
+            const Data = {
+                    origin: {'name': 'New Delhi', 'code': 'NDLS'},
+                    destination: {'name': 'Mumbai CST', 'code': 'CSTM'},
+                    trainClass: 'Sleeper',
+                    date: '20082025'
+                }
+                
+                navigate('/showtrains', {state: {Data}});
+                return;
+        }
 
         if(fromJunction.code === '--' || toJunction.code === '--' || !trainClass || !departureDate){
             alert("Please fill up all the spaces");
@@ -164,7 +186,7 @@ function SearchTrainPage(){
                 <i onClick={() => navigate('/')} className="fa-solid fa-angle-left text-[#767676] text-2xl" />
                 <div className="absolute left-1/2 -translate-x-1/2 bg-[#1D1F24] h-12 w-[90vw] flex justify-center items-center rounded-4xl"><h2 className="text-white text-2xl font-semibold">Search trains</h2></div>    
             </div>
-            <div className="h-150 w-[90vw] bg-[#1D1F24] my-10 rounded-[2rem] py-5 px-10 text-center">
+            <div className="h-fit w-[90vw] bg-[#1D1F24] my-10 rounded-[2rem] py-5 px-10 text-center">
 
                 {/* Origin Junction section */}
                 <p className="text-neutral-500 text-lg text-left">From</p>
@@ -312,9 +334,32 @@ function SearchTrainPage(){
                     </div>
 
                 </div>
-                <button onClick={searchTrainsButton} className="border-0 bg-blue-500 text-white text-xl font-semibold mt-10 mb-5 h-13 w-[70vw] rounded-2xl">Search trains</button>
-            </div>
+                <button onClick={() => searchTrainsButton()} className="border-0 bg-blue-500 text-white text-xl font-semibold mt-10 mb-5 h-13 w-[70vw] rounded-2xl">Search trains</button>
+                {/* Button for testing with a sample data*/}
+                <button
+                    type="button"
+                    onClick={() => searchTrainsButton(true)}
+                    className="w-full bg-[#28292E] hover:bg-[#383A40] text-white font-semibold py-2 rounded-xl text-base transition mb-2"
+                >
+                    Test with Sample data
+                </button>
+                </div>
 
+            {showNotification && (
+                <div className="fixed z-40 top-20 right-0 w-7/8 px-3 py-2 backdrop-blur-md bg-blue-500/20 border border-blue-300/30 rounded-xl shadow-md flex items-start space-x-3">
+                    <i className="fa fa-thumbs-up animate-bounce mt-1"></i>
+                    <div>
+                    <strong className="block font-semibold">Tip!</strong>
+                    <span className="leading-[1.1]">You can test with sample data using the button below, as we have cached data for you and you don't have to wait for the whole computation!</span>
+                    </div>
+                    <button 
+                        onClick={() => setShowNotification(false)} 
+                        className="ml-4 text-white hover:text-gray-200"
+                    >
+                    <i className="fa fa-times"></i>
+                    </button>
+                </div>
+            )}
         </div>
         </>
     );
