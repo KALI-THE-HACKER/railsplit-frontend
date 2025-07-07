@@ -97,11 +97,11 @@ h2 {
 /* Positions */
 .from {
   bottom: 12px;
-  left: 16px;
+  left: 5px;
 }
 
 .via {
-  top: 63%;
+  top: 70%;
   right: 38%;
   transform: translateY(-50%);
 }
