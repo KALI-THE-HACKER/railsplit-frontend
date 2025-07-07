@@ -23,7 +23,7 @@ function ShowTrainPage() {
     const [popupCardData, setPopupCardData] = useState(null);
     const [showNotification, setShowNotification] = useState(false);
     const [notificationShowed, setNotificationShowed] = useState(false);
-
+    const [showBanner, setShowBanner] = useState(true);
 
 
     // Extract data from react navigate state
@@ -503,6 +503,15 @@ function ShowTrainPage() {
                     </div>
                     )}
 
+            {showBanner &&
+                <div className="fixed z-50 h-screen w-screen backdrop-blur-xs">
+                    <div className="fixed h-fit w-[85vw] bg-neutral-900 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-2xl text-xl p-5 text-center">
+                        Our server is handling everything for you—from splitting your journey and calculating efficient routes to fetching real-time data and checking train availability. This can take some time, so please be patient while our servers work for you!
+
+                        <button onClick={() => setShowBanner(false)} className="border-0 bg-blue-500 text-white text-xl font-semibold mt-10 mb-5 h-13 rounded-xl w-full">Proceed</button>
+                    </div>
+                </div>
+            }
             </div>
         </>
     );
