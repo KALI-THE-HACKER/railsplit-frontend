@@ -6,6 +6,7 @@ function PnrStatusPage() {
     const [loading, setLoading] = useState(false);
     const [pnrData, setPnrData] = useState(null);
     const [error, setError] = useState("");
+    const [showNotification, setShowNotification] = useState(true);
 
     const navigate = useNavigate();
     const apikey = import.meta.env.VITE_RAILSPLIT_API_KEY;
@@ -25,6 +26,15 @@ function PnrStatusPage() {
             document.body.style.overflow = "";
         };
     }, [pnrData]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setShowNotification(false);
+        }, 7000); // Hide notification after 7 seconds
+        return () => {
+            setShowNotification(false);
+        }
+    }, [])
 
     const handleCheckStatus = async () => {
         setError("");
@@ -65,7 +75,7 @@ function PnrStatusPage() {
                     <h2 className="text-white text-2xl font-semibold">PNR Status</h2>
                 </div>    
             </div>
-            <div className="relative bg-[#1D1F24] rounded-2xl shadow-lg p-8 w-full max-w-md flex flex-col items-center top-1/2 -translate-y-5/8">
+            <div className="relative bg-[#1D1F24] rounded-2xl shadow-lg p-8 w-full max-w-md flex flex-col items-center top-1/2 -translate-y-1/2">
                 <h1 className="text-3xl font-bold text-white mb-6">Check PNR Status</h1>
                 <input
                     type="text"
@@ -84,14 +94,21 @@ function PnrStatusPage() {
                 >
                     {loading ? "Checking..." : "Get Status"}
                 </button>
+
+                {/* Button for testing with a sample PNR */}
+                <button
+                    type="button"
+                    onClick={() => {
+                        setPnr("8234569935");
+                        setTimeout(() => handleCheckStatus(), 0);
+                    }}
+                    className="w-full bg-[#28292E] hover:bg-[#383A40] text-white font-semibold py-2 rounded-xl text-base transition mb-2"
+                    disabled={loading}
+                >
+                    Test with Sample PNR
+                </button>
                 {error && <div className="text-red-400 mt-2">{error}</div>}
-                {/* Render PNR data here if needed */}
-                {pnrData && (
-                    <div className="mt-6 w-full text-white">
-                        {/* Render your PNR status details here */}
-                        {/* Example: <pre>{JSON.stringify(pnrData, null, 2)}</pre> */}
-                    </div>
-                )}
+
             </div>
             {loading  && 
                 <div className="fixed top-0 left-0 h-screen w-screen z-50 bg-black/40 flex flex-col gap-7 items-center justify-center backdrop-blur-xs">
@@ -150,6 +167,22 @@ function PnrStatusPage() {
                     </div>
                 </div>
             }
+
+            {showNotification && (
+                <div className="fixed z-40 top-20 right-0 w-7/8 px-3 py-2 backdrop-blur-md bg-blue-500/20 border border-blue-300/30 rounded-xl shadow-md flex items-start space-x-3">
+                    <i className="fa fa-thumbs-up animate-bounce mt-1"></i>
+                    <div>
+                    <strong className="block font-semibold">Tip!</strong>
+                    <span className="leading-[1.1]">You can test the PNR status functionality with sample data using the button below!</span>
+                    </div>
+                    <button 
+                        onClick={() => setShowNotification(false)} 
+                        className="ml-4 text-white hover:text-gray-200"
+                    >
+                    <i className="fa fa-times"></i>
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
