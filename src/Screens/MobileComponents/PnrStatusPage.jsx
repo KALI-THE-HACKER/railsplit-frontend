@@ -36,6 +36,12 @@ function PnrStatusPage() {
         }
     }, [])
 
+    useEffect(() => {
+        if(pnr=== "8234569935") {
+            handleCheckStatus();
+        }
+    }, [pnr]);
+
     const handleCheckStatus = async () => {
         setError("");
         setPnrData(null);
@@ -100,7 +106,6 @@ function PnrStatusPage() {
                     type="button"
                     onClick={() => {
                         setPnr("8234569935");
-                        setTimeout(() => handleCheckStatus(), 0);
                     }}
                     className="w-full bg-[#28292E] hover:bg-[#383A40] text-white font-semibold py-2 rounded-xl text-base transition mb-2"
                     disabled={loading}
