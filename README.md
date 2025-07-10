@@ -3,9 +3,9 @@
 A modern frontend built with **React + Vite** for **Railsplit**, an app that helps Indian train travelers discover split journeys with better seat availability.
 
 ![React](https://img.shields.io/badge/Built%20With-React%20%26%20Vite-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Beta-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Stable-release-yellow?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-v1.0.0--beta-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-v1.0.0-orange?style=for-the-badge)
 
 ---
 
@@ -14,7 +14,7 @@ A modern frontend built with **React + Vite** for **Railsplit**, an app that hel
 - 🔍 Search optimized split train journeys.
 - 🚀 Super fast and responsive with Vite.
 - 🎨 Clean, dark-themed UI with intuitive UX.
-- 🌐 Connects seamlessly with the Railsplit backend API.
+- 🌐 Connects seamlessly with the Railsplit backend API (My own API).
 
 ---
 
@@ -34,7 +34,7 @@ A modern frontend built with **React + Vite** for **Railsplit**, an app that hel
 ---
 
 ## 🖼️ Screenshots
-will be available soon...
+![Screenshots](assets/Railsplit-app-screenshots.jpg)
 
 ---
 
@@ -42,10 +42,10 @@ will be available soon...
 
 | Version            | Description                       |       Date       |
 |--------------------|-----------------------------------|------------------|
-| `v1.0.0-beta`      | 🚀 First public beta release      |  July 1st, 2025  |
-| `v1.0.0` (Planned) | 🎉 Initial stable release         |    Coming Soon   |
+|   `v1.0.0-beta`    | 🚀 First public beta release      |  July 1st, 2025  |
+|     `v1.0.0`       | 🎉 Initial stable release         |  July 10th, 2025 |
 
-**Current Version:** `v1.0.0-beta`
+**Current Version:** `v1.0.0`
 
 ---
 
