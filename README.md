@@ -23,6 +23,8 @@ A modern frontend built with **React + Vite** for **Railsplit**, an app that hel
 - ⚛️ **React**
 - ⚡ **Vite**
 - 🎨 **TailwindCSS**
+- 🐳 **Docker**
+- ⚡ **FastAPI**
 - ☁️ **Cloudflare Pages** (Hosting)
 
 ---
