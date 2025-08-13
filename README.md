@@ -3,7 +3,7 @@
 A modern frontend built with **React + Vite** for **Railsplit**, an app that helps Indian train travelers discover split journeys with better seat availability.
 
 ![React](https://img.shields.io/badge/Built%20With-React%20%26%20Vite-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Stable-release-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-stable-brightgreen?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-v1.0.0-orange?style=for-the-badge)
 
