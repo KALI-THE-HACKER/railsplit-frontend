@@ -25,7 +25,7 @@ export default function DesktopView() {
                 <div className="flex flex-col items-center gap-2">
                     <span className="text-lg text-gray-300">Contact us if you have any queries:</span>
                     <Link
-                        to="https://portfolio.luckylinux.xyz#contact"
+                        to="https://portfolio.luckylinux.dev#contact"
                         className="text-blue-400 underline text-lg hover:text-blue-300 transition"
                     >
                         Go to Contact Page
