@@ -36,9 +36,9 @@ function ContactUsPage() {
                     We're here for you!
                 </p>
                 <div className="w-full flex flex-col gap-4">
-                    <div onClick={() => window.location.href = 'mailto:support@luckylinux.xyz'} className="flex items-center gap-3 bg-[#23252b] rounded-xl px-4 py-3 cursor-pointer hover:bg-[#23252b]/80 transition">
+                    <div onClick={() => window.location.href = 'mailto:support@luckylinux.dev'} className="flex items-center gap-3 bg-[#23252b] rounded-xl px-4 py-3 cursor-pointer hover:bg-[#23252b]/80 transition">
                         <i className="fa-solid fa-envelope text-blue-400 text-xl"></i>
-                        <span className="text-white text-lg break-all">support@luckylinux.xyz</span>
+                        <span className="text-white text-lg break-all">support@luckylinux.dev</span>
                     </div>
                 </div>
                 <div className="mt-8 w-full">

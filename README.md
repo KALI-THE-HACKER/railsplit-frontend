@@ -31,7 +31,7 @@ A modern frontend built with **React + Vite** for **Railsplit**, an app that hel
 
 ## 🚀 Live Demo
 
-👉 **[railsplit.luckylinux.xyz](https://railsplit.luckylinux.xyz)**
+👉 **[railsplit.luckylinux.dev](https://railsplit.luckylinux.dev)**
 
 ---
 
