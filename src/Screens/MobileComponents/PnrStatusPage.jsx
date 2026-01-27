@@ -51,7 +51,7 @@ function PnrStatusPage() {
         }
         setLoading(true);
         try {
-            const response = await fetch(`https://railsplit-server.luckylinux.dev/pnr-status/${pnr}/apikey/${apikey}`);
+            const response = await fetch(`/api/pnr-status/${pnr}/apikey/${apikey}`);
 
             if(response.status == 422) {
                 alert("Invalid PNR number. Please check and try again!");
